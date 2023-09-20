@@ -5,11 +5,10 @@ import {
   FilterInput,
   FilterPlaceholder,
 } from './Filter.styled';
-import { useDispatch, useSelector } from 'react-redux';
-import { setFilter, getFilter } from 'redux/contactsSlice';
+import { useDispatch } from 'react-redux';
+import { setFilter } from 'redux/filterSlice';
 
 const Filter = () => {
-  const filter = useSelector(getFilter);
   const dispatch = useDispatch();
 
   const handeChangeFilter = e => {
@@ -24,7 +23,6 @@ const Filter = () => {
           placeholder=" "
           type="text"
           name="filter"
-          value={filter}
           onChange={handeChangeFilter}
         />
         <FilterPlaceholder htmlFor="filter">Find contact</FilterPlaceholder>

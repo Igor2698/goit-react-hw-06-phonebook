@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteTask, getContacts, getFilter } from 'redux/contactsSlice';
+import { deleteTask } from 'redux/contactsSlice';
 
 import {
   ContContactList,
@@ -8,47 +8,29 @@ import {
   ContListItem,
   ContListBtn,
 } from './ContactsList.styled';
+import { selectVisibleContacts } from 'redux/selectors/selectors';
 const ContactsList = () => {
-  const contactsArray = useSelector(getContacts);
-  const filter = useSelector(getFilter);
-  const dispatch = useDispatch();
-  const normalizedFilter = filter.toLowerCase();
+  const visibleContacts = useSelector(selectVisibleContacts);
 
-  const filteredContacts = contactsArray.filter(contact =>
-    contact.name.toLowerCase().includes(normalizedFilter)
-  );
+  const dispatch = useDispatch();
+  console.log(visibleContacts);
 
   return (
-    <>
-      {contactsArray.length > 0 && filteredContacts.length === 0 && (
-        <p>No one found with that name</p>
-      )}
+    <ContContactList>
+      <ContListUl>
+        {visibleContacts.map(({ id, name, number }) => (
+          <ContListItem key={id}>
+            <ContListText>
+              {name}: <span className="number"> {number}</span>
+            </ContListText>
 
-      {contactsArray.length === 0 && (
-        <p>Please add contact by click on "Add conctact" button</p>
-      )}
-
-      {contactsArray.length > 0 && (
-        <ContContactList>
-          <ContListUl>
-            {filteredContacts.map(({ id, name, number }) => (
-              <ContListItem key={id}>
-                <ContListText>
-                  {name}: <span className="number"> {number}</span>
-                </ContListText>
-
-                <ContListBtn
-                  type="button"
-                  onClick={() => dispatch(deleteTask(id))}
-                >
-                  Delete
-                </ContListBtn>
-              </ContListItem>
-            ))}
-          </ContListUl>
-        </ContContactList>
-      )}
-    </>
+            <ContListBtn type="button" onClick={() => dispatch(deleteTask(id))}>
+              Delete
+            </ContListBtn>
+          </ContListItem>
+        ))}
+      </ContListUl>
+    </ContContactList>
   );
 };
 

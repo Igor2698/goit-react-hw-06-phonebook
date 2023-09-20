@@ -2,7 +2,8 @@ import React from 'react';
 import { add } from 'redux/contactsSlice';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectContacts } from 'redux/selectors/selectors';
 
 import { nanoid } from 'nanoid';
 import {
@@ -25,19 +26,28 @@ const formSchema = Yup.object().shape({
 });
 
 const MyForm = () => {
+  const contacts = useSelector(selectContacts);
   const dispatch = useDispatch();
 
   return (
     <Formik
       initialValues={{
         name: '',
-        number: '+380',
+        number: '',
       }}
       validationSchema={formSchema}
       onSubmit={(values, actions) => {
-        dispatch(
-          add({ name: values.name, number: values.number, id: nanoid() })
-        );
+        const { name, number } = values;
+        if (
+          contacts.find(
+            contact =>
+              contact.name.toLowerCase() === name.toLowerCase() ||
+              contact.number === number
+          )
+        ) {
+          return alert('Phonebook already has this values');
+        }
+        dispatch(add({ name, number, id: nanoid() }));
         actions.resetForm();
       }}
     >

@@ -8,13 +8,29 @@ import {
     PURGE,
     REGISTER,
 } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
+import { persistReducer } from 'redux-persist';
+import { contactsSlice } from './contactsSlice';
+import { filterSlice } from './filterSlice';
 
-import { contactsReducer } from './contactsSlice';
+
+
+const persistConfig = {
+    key: 'contacts',
+    storage,
+    whitelist: ['contacts']
+
+};
+
+
+const contactsReducer = persistReducer(persistConfig, contactsSlice.reducer);
+// const filterReducer = persistReducer(persistConfig, filterSlice.reducer)
 
 
 export const store = configureStore({
     reducer: {
         contacts: contactsReducer,
+        filter: filterSlice.reducer,
     },
     middleware(getDefaultMiddleware) {
         return getDefaultMiddleware({
@@ -26,3 +42,21 @@ export const store = configureStore({
 });
 
 export const persistor = persistStore(store);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
