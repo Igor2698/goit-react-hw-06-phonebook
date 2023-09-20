@@ -28,7 +28,7 @@ const ContactsList = () => {
         <p>Please add contact by click on "Add conctact" button</p>
       )}
 
-      {
+      {contactsArray.length > 0 && (
         <ContContactList>
           <ContListUl>
             {filteredContacts.map(({ id, name, number }) => (
@@ -47,7 +47,7 @@ const ContactsList = () => {
             ))}
           </ContListUl>
         </ContContactList>
-      }
+      )}
     </>
   );
 };
