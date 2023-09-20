@@ -1,7 +1,10 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { add } from 'redux/contactsSlice';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
+import { useDispatch } from 'react-redux';
+
+import { nanoid } from 'nanoid';
 import {
   StyledForm,
   Label,
@@ -21,7 +24,9 @@ const formSchema = Yup.object().shape({
     .required('This field is required, please fill that'),
 });
 
-const MyForm = ({ onSubmit }) => {
+const MyForm = () => {
+  const dispatch = useDispatch();
+
   return (
     <Formik
       initialValues={{
@@ -30,7 +35,9 @@ const MyForm = ({ onSubmit }) => {
       }}
       validationSchema={formSchema}
       onSubmit={(values, actions) => {
-        onSubmit(values);
+        dispatch(
+          add({ name: values.name, number: values.number, id: nanoid() })
+        );
         actions.resetForm();
       }}
     >
@@ -55,7 +62,3 @@ const MyForm = ({ onSubmit }) => {
 };
 
 export default MyForm;
-
-MyForm.propTypes = {
-  onSubmit: PropTypes.func,
-};

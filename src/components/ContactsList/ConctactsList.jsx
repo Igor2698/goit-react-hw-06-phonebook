@@ -1,4 +1,6 @@
-import PropTypes from 'prop-types';
+import { useDispatch, useSelector } from 'react-redux';
+import { deleteTask, getContacts, getFilter } from 'redux/contactsSlice';
+
 import {
   ContContactList,
   ContListUl,
@@ -6,43 +8,48 @@ import {
   ContListItem,
   ContListBtn,
 } from './ContactsList.styled';
-const ContactsList = ({ onDeleteContact, filtered }) => {
-  return (
-    <ContContactList>
-      <ContListUl>
-        {filtered.map(({ id, name, number }) => (
-          <ContListItem key={id}>
-            <ContListText>
-              {name}: <span className="number"> {number}</span>
-            </ContListText>
+const ContactsList = () => {
+  const contactsArray = useSelector(getContacts);
+  const filter = useSelector(getFilter);
+  const dispatch = useDispatch();
+  const normalizedFilter = filter.toLowerCase();
 
-            <ContListBtn type="button" onClick={() => onDeleteContact(id)}>
-              Delete
-            </ContListBtn>
-          </ContListItem>
-        ))}
-      </ContListUl>
-    </ContContactList>
+  const filteredContacts = contactsArray.filter(contact =>
+    contact.name.toLowerCase().includes(normalizedFilter)
+  );
+
+  return (
+    <>
+      {contactsArray.length > 0 && filteredContacts.length === 0 && (
+        <p>No one found with that name</p>
+      )}
+
+      {contactsArray.length === 0 && (
+        <p>Please add contact by click on "Add conctact" button</p>
+      )}
+
+      {
+        <ContContactList>
+          <ContListUl>
+            {filteredContacts.map(({ id, name, number }) => (
+              <ContListItem key={id}>
+                <ContListText>
+                  {name}: <span className="number"> {number}</span>
+                </ContListText>
+
+                <ContListBtn
+                  type="button"
+                  onClick={() => dispatch(deleteTask(id))}
+                >
+                  Delete
+                </ContListBtn>
+              </ContListItem>
+            ))}
+          </ContListUl>
+        </ContContactList>
+      }
+    </>
   );
 };
 
 export default ContactsList;
-
-ContactsList.propTypes = {
-  filtered: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-      number: PropTypes.string.isRequired,
-    })
-  ),
-
-  onDeleteContact: PropTypes.func.isRequired,
-  contacts: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-      number: PropTypes.string.isRequired,
-    })
-  ),
-};

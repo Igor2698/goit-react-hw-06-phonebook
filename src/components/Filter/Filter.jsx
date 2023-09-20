@@ -6,8 +6,17 @@ import {
   FilterInput,
   FilterPlaceholder,
 } from './Filter.styled';
+import { useDispatch, useSelector } from 'react-redux';
+import { setFilter, getFilter } from 'redux/contactsSlice';
 
-const Filter = ({ value, onChange }) => {
+const Filter = () => {
+  const filter = useSelector(getFilter);
+  const dispatch = useDispatch();
+
+  const handeChangeFilter = e => {
+    dispatch(setFilter(e.currentTarget.value));
+  };
+
   return (
     <CenterContainer>
       <FilterTitile>Contacts</FilterTitile>
@@ -16,8 +25,8 @@ const Filter = ({ value, onChange }) => {
           placeholder=" "
           type="text"
           name="filter"
-          value={value}
-          onChange={onChange}
+          value={filter}
+          onChange={handeChangeFilter}
         />
         <FilterPlaceholder htmlFor="filter">Find contact</FilterPlaceholder>
       </ContFilter>
@@ -26,8 +35,3 @@ const Filter = ({ value, onChange }) => {
 };
 
 export default Filter;
-
-Filter.propTypes = {
-  value: PropTypes.string.isRequired,
-  onChange: PropTypes.func,
-};
